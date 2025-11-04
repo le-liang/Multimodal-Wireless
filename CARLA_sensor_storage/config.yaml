@@ -1,0 +1,132 @@
+scenario: "Town03_Tjunction_wiz_slope"
+
+simulation:
+  seed: 42
+  frame_rate: 100
+  warmup_seconds: 1
+  duration_seconds: 10
+  queue_timeout: 60.0
+  executor_workers: 16
+  client_timeout: 20.0
+  spectator_height: 120
+  # Settings for a sunny day
+  weather:
+    cloudiness: 10.0
+    precipitation: 0.0
+    fog_density: 0.0
+    sun_altitude_angle: 65.0
+    sun_azimuth_angle: 180.0
+    rayleigh_scattering_scale: 0.0331
+  preferred_vehicles:
+    - "vehicle.tesla.model3"
+    - "vehicle.audi.etron"
+    - "vehicle.mercedes.coupe"
+    - "vehicle.mini.cooper_s_2021"
+    - "vehicle.nissan.micra"
+    - "vehicle.bmw.grandtourer"
+    - "vehicle.chevrolet.impala"
+    - "vehicle.dodge.charger_police"
+    - "vehicle.ford.mustang"
+    - "vehicle.jeep.wrangler_rubicon"
+    - "vehicle.lincoln.mkz_2017"
+    - "vehicle.toyota.prius"
+    - "vehicle.audi.tt"
+    - "vehicle.tesla.cybertruck"
+    - "vehicle.nissan.patrol"
+    - "vehicle.audi.a2"
+    - "vehicle.lincoln.mkz_2020"
+    - "vehicle.mercedes.coupe_2020"
+    - "vehicle.mini.cooper_s"
+    - "vehicle.nissan.patrol_2021"
+
+output:
+  root_dir_template: "{scenario_name}_seed{seed}"
+
+scenarios:
+  Town03_Tjunction_wiz_slope:
+    map: "Town03"
+    actors:
+      num_vehicles: 20
+      num_rsu: 1
+      # Ranks of vehicles (sorted by distance to spawn_center) to be selected as CAVs
+      desired_cav_ranks: [5, 6, 12]
+    spawn_center: {x: 152, y: -134, z: 8}
+    # Locations for each RSU, identified by their index
+    rsu_transform:
+      { location: {x: 162, y: -133, z: 8}, rotation: {pitch: 0, yaw: -90} }
+
+# Sensor definitions, attributes, and relative placements
+sensors:
+  cav:
+    camera:
+      blueprint: "sensor.camera.rgb"
+      attributes:
+        image_size_x: '640'
+        image_size_y: '480'
+        fov: '110'
+      transforms: # Names (camera0, etc.) are used for file/folder naming
+        camera0: { location: {x: 1.5, z: 2.4}, rotation: {yaw: 0} }
+        camera1: { location: {x: -1.5, z: 2.4}, rotation: {yaw: 180} }
+        camera2: { location: {x: 0.0, y: -0.7, z: 2.4}, rotation: {yaw: -90} }
+        camera3: { location: {x: 0.0, y: 0.7, z: 2.4}, rotation: {yaw: 90} }
+    lidar:
+      blueprint: "sensor.lidar.ray_cast"
+      attributes:
+        range: '120.0'
+        channels: '64'
+        points_per_second: '3000000' # 30k * 100fps
+        rotation_frequency: '100' # Matches frame_rate
+        upper_fov: '2'
+        lower_fov: '-25'
+        dropoff_general_rate: '0'
+        dropoff_intensity_limit: '1'
+      transform: { location: {x: 0.0, z: 2.5} }
+    imu:
+      blueprint: "sensor.other.imu"
+      attributes:
+        noise_accel_stddev_x: '0.1'
+        noise_accel_stddev_y: '0.1'
+        noise_accel_stddev_z: '0.1'
+        noise_gyro_stddev_x: '0.002'
+        noise_gyro_stddev_y: '0.002'
+        noise_gyro_stddev_z: '0.002'
+        noise_gyro_bias_x: '0.001'
+        noise_gyro_bias_y: '0.001'
+        noise_gyro_bias_z: '0.001'
+        noise_seed: '42'
+      transform: { location: {x: 0.0, y: 0.0, z: 0.0} }
+  rsu:
+    camera:
+      blueprint: "sensor.camera.rgb"
+      attributes:
+        image_size_x: '640'
+        image_size_y: '480'
+        fov: '110'
+      transform: { location: {x: 0, y: 0, z: 3.9}, rotation: {pitch: 0, yaw: -90} }
+    depth_camera:
+      blueprint: "sensor.camera.depth"
+      attributes:
+        image_size_x: '640'
+        image_size_y: '480'
+        fov: '110'
+      transform: { location: {x: 0, y: 0, z: 3.9}, rotation: {pitch: 0, yaw: -90} }
+    lidar:
+      blueprint: "sensor.lidar.ray_cast"
+      attributes:
+        range: '120.0'
+        channels: '64'
+        points_per_second: '3000000' # 30k * 100fps
+        rotation_frequency: '100' # Matches frame_rate
+        upper_fov: '2'
+        lower_fov: '-25'
+        dropoff_general_rate: '0'
+        dropoff_intensity_limit: '1'
+      transform: { location: {x: 0, z: 4} }
+    radar:
+      blueprint: "sensor.other.radar"
+      attributes:
+        horizontal_fov: '110'
+        vertical_fov: '30'
+        range: '100'
+        points_per_second: '200000'
+      transform: { location: {x: 0, z: 4.1}, rotation: {yaw: -90} }

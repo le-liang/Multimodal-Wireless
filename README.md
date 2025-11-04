@@ -1,26 +1,22 @@
 # Multimodal-Wireless Dataset: Extension and Replay Toolkit
 
-[![Project Website](https://img.shields.io/badge/Project-Website-blue)](https://example.com)
-[![Download Dataset](https://img.shields.io/badge/Download-Data-green)](https://example.com/download)
-[![Watch Tutorial](https://img.shields.io/badge/YouTube-Tutorial-red)](https://www.youtube.com/watch?v=dxxxx)
-
 This guide provides instructions on how to set up the environment and software needed to extend or replay the Multimodal-Wireless dataset.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Prerequisites](#-prerequisites)
 - [Installation Guide](#-installation-guide)
   - [1. Setting up the Python Environment](#1-setting-up-the-python-environment)
   - [2. Setting up Blender with Mitsuba Renderer](#2-setting-up-blender-with-mitsuba-renderer)
   - [3. Setting up CARLA Simulator](#3-setting-up-carla-simulator)
-- [▶️ How to Use](#️-how-to-use)
+- [How to Extend/Replay](#️-how-to-use)
 
-## 🔧 Prerequisites
+## Prerequisites
 
 Before you begin, ensure you have the following installed:
 - **Conda** (either Anaconda or Miniconda)
 
-## 🚀 Installation Guide
+## Installation Guide
 
 Please follow these steps carefully to configure your system.
 
@@ -73,7 +69,7 @@ This project is compatible with a specific version of the CARLA simulator.
     Download **CARLA version 0.9.15** from the official GitHub release page:
     [CARLA 0.9.15 Releases](https://github.com/carla-simulator/carla/releases/tag/0.9.15)
 
-## ▶️ How to Use
+## How to Extend/Replay
 
 Once your environment and software are fully set up, you can begin the extension or replay process by following the detailed steps in our tutorial video.
 

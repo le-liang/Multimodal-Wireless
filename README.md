@@ -77,4 +77,9 @@ This project is compatible with a specific version of the CARLA simulator.
 
 Once your environment and software are fully set up, you can begin the extension or replay process by following the detailed steps in our tutorial video.
 
-➡️ **[Watch the Tutorial on YouTube](https://www.youtube.com/watch?v=dxxxx)**
+Generally, the generation of dataset includes three steps:
+- CARLA: Define the scenario in CARLA via the config file and implement it via carla_main.py, which produces five sensor data and the yaml file of all frames simultaneously.
+- Blender: Reconstruct the whole scenario frame by frame in Blender based on the .yaml file of each frame.
+- Sionna: Load the scene of each frame and compute multi-path components and generate the corresponding channel.
+
+➡️ **Watch the Tutorial on** [YouTube](https://youtu.be/M0qTrLj61aM) or [Bilibili](https://www.bilibili.com/video/BV1r11nBGEaV/?spm_id_from=333.1387.homepage.video_card.click&vd_source=96080c7f8528346ec45df46d67c8d3e1)

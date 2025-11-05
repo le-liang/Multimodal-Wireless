@@ -16,6 +16,7 @@ This guide provides instructions on how to set up the environment and software n
 Before you begin, ensure you have the following tasks done:
 - Clone the current github repository
 - Download the Blender asset from 'Blender_Towns' folder in [Dataset](https://1drv.ms/f/c/e891739d21c98746/EpnYIxEFXAdAmoj7GePie8QB5be53v1TTER4OmjjQbNYNQ?e=ykbmZh) or [中国大陆镜像](https://pan.quark.cn/s/de33117418c4)
+
 If you only want to replay some scenario:
 - Download the dataset of the scenario from 'sunny' folder in [Dataset](https://1drv.ms/f/c/e891739d21c98746/EpnYIxEFXAdAmoj7GePie8QB5be53v1TTER4OmjjQbNYNQ?e=ykbmZh) or [中国大陆镜像](https://pan.quark.cn/s/de33117418c4)
 

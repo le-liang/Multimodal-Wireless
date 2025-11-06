@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# Author: Tianhao Mao <tianhao@seu.edu.cn>
+# License: TDG-Attribution-NonCommercial-NoDistrib
+
+
 import carla
 import random
 import os
@@ -14,9 +19,7 @@ from data_utils.localization import LocalizationManager
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
- # =============================================================================
- #  Helper
- # =============================================================================
+
 actor_data_store = {}
 executor = ThreadPoolExecutor(max_workers=16)
 manager = SensorDataManager(executor, actor_data_store)

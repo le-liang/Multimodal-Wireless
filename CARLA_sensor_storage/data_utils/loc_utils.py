@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# Author: Tianhao Mao <tianhao@seu.edu.cn>, OpenCOOD
+# License: TDG-Attribution-NonCommercial-NoDistrib
+
+
 """
 Localization utilities combining coordinate_transform, kalman_filter, and localization_debug_helper
 """

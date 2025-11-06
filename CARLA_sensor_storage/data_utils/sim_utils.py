@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# Author: Tianhao Mao <tianhao@seu.edu.cn>
+# License: TDG-Attribution-NonCommercial-NoDistrib
+
 import os
 import json
 import yaml

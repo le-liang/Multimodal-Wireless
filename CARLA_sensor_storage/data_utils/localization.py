@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Localization module based on teacherscript.py and provided scripts
-"""
+# Author: Tianhao Mao <tianhao@seu.edu.cn>, OpenCOOD
+# License: TDG-Attribution-NonCommercial-NoDistrib
+
+
 import weakref
 import carla
 import numpy as np

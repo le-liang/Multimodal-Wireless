@@ -130,3 +130,18 @@ sensors:
         range: '100'
         points_per_second: '200000'
       transform: { location: {x: 0, z: 4.1}, rotation: {yaw: -90} }
+
+# Localization configuration
+localization:
+  activate: true
+  dt: 0.05  # Time step in seconds (1/frame_rate)
+  gnss:
+    noise_alt_stddev: '0.005'
+    noise_lat_stddev: '0.00001'
+    noise_lon_stddev: '0.00001'
+    heading_direction_stddev: 0.1  # Degrees
+    speed_stddev: 0.2  # m/s
+  debug_helper:
+    show_animation: false
+    x_scale: 1.0
+    y_scale: 100.0

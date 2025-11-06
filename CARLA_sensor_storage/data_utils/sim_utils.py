@@ -116,7 +116,7 @@ class SensorDataManager:
         sensor_queue.put((frame_id, actor_label, sensor_name, processed_successfully))
 
     def yaml_dumper(self, frame_id, world, cav_vehicles_dict, sensors_dict, rsu_actors_dict, rsu_sensors_dict,
-                    all_spawned_vehicle_actors):
+                    all_spawned_vehicle_actors, localization_managers=None):
         for cav_label, cav_vehicle in cav_vehicles_dict.items():
             if cav_vehicle is None or not cav_vehicle.is_alive:
                 continue
@@ -127,6 +127,23 @@ class SensorDataManager:
             vehicles_data_formatted = {}
             perception_range = 50.0
             ego_location = cav_vehicle.get_location()
+
+            for rsu_label, rsu_anchor in rsu_actors_dict.items():
+                if rsu_anchor and rsu_anchor.is_alive and ego_location.distance(
+                        rsu_anchor.get_location()) <= perception_range:
+                    rsu_pos = rsu_anchor.get_transform()
+                    rsu_bbx = rsu_anchor.bounding_box
+
+                    # Add RSU data with id = 0, as requested
+                    vehicles_data_formatted[0] = {
+                        'bp_id': rsu_anchor.type_id,
+                        'color': '0,0,0',  # Static props don't typically have a color attribute
+                        "location": [rsu_pos.location.x, rsu_pos.location.y, rsu_pos.location.z],
+                        "center": [rsu_bbx.location.x, rsu_bbx.location.y, rsu_bbx.location.z],
+                        "angle": [rsu_pos.rotation.roll, rsu_pos.rotation.yaw, rsu_pos.rotation.pitch],
+                        "extent": [rsu_bbx.extent.x, rsu_bbx.extent.y, rsu_bbx.extent.z],
+                        "speed": 0.0
+                    }
 
             for veh in all_spawned_vehicle_actors:
                 if veh.id == cav_vehicle.id or ego_location.distance(veh.get_location()) > perception_range:
@@ -196,6 +213,22 @@ class SensorDataManager:
                     'compass': 0.0,
                     'data_missing': True
                 }
+            
+            # Add localization data (GPS, predicted_ego_pos, true_ego_pos) in sensors section
+            if localization_managers and cav_label in localization_managers:
+                loc_manager = localization_managers[cav_label]
+                if loc_manager is not None:
+                    # GPS noisy position
+                    if loc_manager.gps_noisy_pos:
+                        data_dict['sensors']['GPS'] = loc_manager.gps_noisy_pos
+                    
+                    # Predicted ego position (filtered)
+                    if loc_manager.predicted_ego_pos:
+                        data_dict['sensors']['predicted_ego_pos'] = loc_manager.predicted_ego_pos
+                    
+                    # True ego position
+                    if loc_manager.true_ego_pos:
+                        data_dict['sensors']['true_ego_pos'] = loc_manager.true_ego_pos
 
             yaml_filename = f"{frame_id:06d}.yaml"
             yaml_path = os.path.join(save_dir, yaml_filename)

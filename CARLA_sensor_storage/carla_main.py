@@ -9,6 +9,7 @@ from data_utils.processor import get_location, get_transform, distt
 import time
 import traceback  # For printing tracebacks
 from data_utils.sim_utils import SensorDataManager
+from data_utils.localization import LocalizationManager
 
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
@@ -40,11 +41,9 @@ if __name__ == '__main__':
         seed=seed_value
     )
 
-    # <<< MODIFICATION: ADD SCENES DIR >>>
     # Create the dedicated directory for global scene description files
     scenes_output_dir = os.path.join(root_output_dir, 'scenes')
     os.makedirs(scenes_output_dir, exist_ok=True)
-    # <<< MODIFICATION: ADD SCENES DIR >>>
 
     actor_config = scenario_config['actors']
     num_veh = actor_config['num_vehicles']
@@ -67,6 +66,9 @@ if __name__ == '__main__':
 
     rsu_actors_dict = {}
     rsu_sensors_dict = {}
+    
+    # Localization managers for each CAV
+    localization_managers = {}
 
     client = None
     original_settings = None
@@ -183,8 +185,7 @@ if __name__ == '__main__':
                         all_actors_list.append(camera);
                         sensor_list_for_callback.append(camera)
                         camera.listen(
-                            lambda d, lbl=cav_label, st='camera', sn=cam_name: manager.sensor_callback(d, sensor_queue, lbl, st,
-                                                                                                      sn))
+                            lambda d, lbl=cav_label, st='camera', sn=cam_name: manager.sensor_callback(d, sensor_queue, lbl, st, sn))
                         actual_sensors_listening += 1
 
             # --- Spawning LiDAR ---
@@ -202,7 +203,7 @@ if __name__ == '__main__':
                         lambda d, lbl=cav_label, st='lidar', sn='lidar': manager.sensor_callback(d, sensor_queue, lbl, st, sn))
                     actual_sensors_listening += 1
 
-            # --- MODIFICATION START: Spawning Semantic LiDAR ---
+            # --- Spawning Semantic LiDAR ---
             if 'semantic_lidar' in cav_sensor_config:
                 slidar_conf = cav_sensor_config['semantic_lidar']
                 slidar_bp = blueprint_library.find(slidar_conf['blueprint'])
@@ -214,12 +215,9 @@ if __name__ == '__main__':
                     all_actors_list.append(semantic_lidar)
                     sensor_list_for_callback.append(semantic_lidar)
                     semantic_lidar.listen(
-                        lambda d, lbl=cav_label, st='semantic_lidar', sn='semantic_lidar': manager.sensor_callback(d,
-                                                                                                                    sensor_queue,
-                                                                                                                    lbl, st, sn))
+                        lambda d, lbl=cav_label, st='semantic_lidar', sn='semantic_lidar': manager.sensor_callback(d, sensor_queue, lbl, st, sn))
                     actual_sensors_listening += 1
                     print(f"    Attached semantic_lidar to {cav_label}")
-            # --- MODIFICATION END ---
 
             # --- Spawning IMU ---
             if 'imu' in cav_sensor_config:
@@ -236,8 +234,19 @@ if __name__ == '__main__':
                         lambda data, lbl=cav_label, st='imu', sn='imu': manager.sensor_callback(data, sensor_queue, lbl, st,
                                                                                                  sn))
                     actual_sensors_listening += 1
+            
+            # --- Initialize Localization Manager ---
+            if 'localization' in config:
+                try:
+                    loc_config = config['localization'].copy()
+                    loc_config['dt'] = 1.0 / frame_rate
+                    localization_managers[cav_label] = LocalizationManager(vehicle, loc_config, map_)
+                    all_actors_list.append(localization_managers[cav_label].gnss.sensor)
+                    print(f"    Initialized localization manager for {cav_label}")
+                except Exception as e:
+                    print(f"    Warning: Failed to initialize localization for {cav_label}: {e}")
+                    localization_managers[cav_label] = None
 
-    # ... (Rest of the script for RSU spawning, main loop, and cleanup remains the same)
     if num_rsu > 0:
         print(f"\n--- Spawning {num_rsu} RSU(s) and their sensors ---")
         for i in range(num_rsu):
@@ -277,10 +286,7 @@ if __name__ == '__main__':
                         rsu_sensors_dict[rsu_label][sensor_type_key] = sensor_actor
 
                     sensor_actor.listen(
-                        lambda d, lbl=rsu_label, st=sensor_type_key, sn=sensor_name_in_file: manager.sensor_callback(d,
-                                                                                                                      sensor_queue,
-                                                                                                                      lbl, st,
-                                                                                                                      sn))
+                        lambda d, lbl=rsu_label, st=sensor_type_key, sn=sensor_name_in_file: manager.sensor_callback(d,sensor_queue,lbl, st,sn))
                     print(f"    Attached {sensor_type_key} to {rsu_label}")
 
     expected_sensor_count_per_frame = actual_sensors_listening
@@ -327,14 +333,24 @@ if __name__ == '__main__':
                             received_this_frame_count += 1
 
                 print(f"  All {expected_sensor_count_per_frame} sensor confirmations received.")
+                
+                # Update localization for each CAV
+                for cav_label, loc_manager in localization_managers.items():
+                    if loc_manager is not None:
+                        # Get IMU data for this frame
+                        imu_data = manager.imu_data_latest.get(cav_label, {}).get(current_frame_id)
+                        if imu_data:
+                            loc_manager.set_imu_data(imu_data)
+                        # Perform localization
+                        loc_manager.localize()
+                
                 # Dumps data for individual actors (CAV, RSU)
                 manager.yaml_dumper(current_frame_id, world, cav_vehicles_dict, sensors_dict,
-                                     rsu_actors_dict, rsu_sensors_dict, all_spawned_vehicle_actors)
+                                     rsu_actors_dict, rsu_sensors_dict, all_spawned_vehicle_actors,
+                                     localization_managers)
 
-                # <<< MODIFICATION: CALL NEW DUMPER >>>
                 # Dumps global data for the entire scene
                 manager.scene_dumper(current_frame_id, all_spawned_vehicle_actors, scenes_output_dir)
-                # <<< MODIFICATION: CALL NEW DUMPER >>>
 
                 frames_processed += 1
 
@@ -361,6 +377,14 @@ if __name__ == '__main__':
             if sensor and hasattr(sensor, 'is_listening') and sensor.is_listening: sensor.stop()
     if 'manager' in locals() and manager:
         manager.shutdown()
+    # Destroy localization managers
+    if 'localization_managers' in locals():
+        for cav_label, loc_manager in localization_managers.items():
+            if loc_manager is not None:
+                try:
+                    loc_manager.destroy()
+                except Exception as e:
+                    print(f"Warning: Error destroying localization manager for {cav_label}: {e}")
     if 'client' in locals() and client and 'all_actors_list' in locals() and all_actors_list:
         client.apply_batch([carla.command.DestroyActor(a) for a in all_actors_list if a is not None])
 

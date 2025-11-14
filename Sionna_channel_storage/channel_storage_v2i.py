@@ -48,18 +48,16 @@ from data_utils import load_loc_speed, H_data_storage, dim_police
 # Set random seed for reproducibility
 sionna.config.seed = 42
 
-data_folder_cav1 = 'data/cav_1'
-data_folder_cav2 = 'data/cav_2'
-data_folder_cav3 = 'data/cav_3'
-data_folder_rsu1 = 'data/rsu_1'
+data_folder_cav1 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/cav_1'
+data_folder_cav2 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/cav_2'
+data_folder_cav3 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/cav_3'
+data_folder_rsu1 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/rsu_1'
 scenes_folder = '/data/scene_generator'  # Root folder for scenes (e.g., scenes/0402/0402.xml)
 
 all_cav_data_paths = [data_folder_cav1, data_folder_cav2, data_folder_cav3]
     # Consolidated configurations for repeated runs
 config = [
     {"tx_rows": 1,"tx_cols": 16, "rx_rows": 1, "rx_cols": 16, "fc": 28e9},
-    {"tx_rows": 1,"tx_cols": 64, "rx_rows": 1, "rx_cols": 16, "fc": 28e9},
-    {"tx_rows": 1,"tx_cols": 256, "rx_rows": 1, "rx_cols": 16, "fc": 28e9},
 ]
 
 # Use data_folder_cav1 to list the frames
@@ -123,10 +121,9 @@ for yaml_filename in yaml_files_in_ref_dir:
                                      polarization="V")
 
         yaml_file_rsu1 = os.path.join(data_folder_rsu1, f"{frame_id}.yaml")
-        tx_pos, _ = load_loc_speed(yaml_file_rsu1)   #load RSU location
-        tx = Transmitter(name="tx", position=tx_pos, orientation=[0, 0, 0])
+        tx_pos, tx_rot, _ = load_loc_speed(yaml_file_rsu1)   #load RSU location
+        tx = Transmitter(name="tx", position=tx_pos, orientation=tx_rot)
         scene.add(tx)
-
         scene.frequency = cfg["fc"]
         scene.synthetic_array = True
         # set rx positions as different CAV positions
@@ -136,10 +133,10 @@ for yaml_filename in yaml_files_in_ref_dir:
             cav_specific_yaml_file = os.path.join(cav_data_folder_root, f"{frame_id}.yaml")
             print(f"  Processing {cav_id_str} (YAML: {cav_specific_yaml_file})...")
 
-            ue_position, cav_speed = load_loc_speed(cav_specific_yaml_file)
+            ue_position, ue_rot, cav_speed = load_loc_speed(cav_specific_yaml_file)
 
             rx_name_current = f"rx_{cav_id_str}"
-            rx = Receiver(name=rx_name_current, position=ue_position, orientation=[0, 0, 0])
+            rx = Receiver(name=rx_name_current, position=ue_position, orientation=ue_rot)
             scene.add(rx)
 
             h_freq_cav = None

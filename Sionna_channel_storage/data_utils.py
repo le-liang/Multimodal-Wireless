@@ -7,13 +7,15 @@ def load_loc_speed(filepath):
         data = yaml.safe_load(f)
     lidar_loc = data['sensors']['lidar_pose']['location']
     lidar_location = [lidar_loc.get('x', 0.0), -lidar_loc.get('y', 0.0), lidar_loc.get('z', 0.0)]
+    lidar_rot = data['sensors']['lidar_pose']['rotation']
+    lidar_rotation = [-lidar_rot.get('yaw', 0.0)*np.pi/180, lidar_rot.get('pitch', 0.0)*np.pi/180, lidar_loc.get('roll', 0.0)*np.pi/180]
     actor_name = data.get('actor')
     if actor_name.startswith('rsu'):
-        return lidar_location, None
+        return lidar_location, lidar_rotation, None
     else:
         veh_speed = data['sensors']['vehicle_speed']['speed']
         vehicle_speed =[veh_speed.get('x', 0.0), -veh_speed.get('y', 0.0), veh_speed.get('z', 0.0)]
-        return lidar_location, vehicle_speed
+        return lidar_location, lidar_rotation, vehicle_speed
 
 
 # Modified save_channel_data: now it also takes cav_id_str and cav_data_folder

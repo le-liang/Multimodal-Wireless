@@ -146,17 +146,17 @@ for yaml_filename in yaml_files_in_ref_dir:
         cav_id_str = cav_ids[i]
         tx_cav_yaml = os.path.join(cav_data_folder_root, f"{frame_id}.yaml")
         print(f"  Processing {cav_id_str} (YAML: {tx_cav_yaml})...")
-        tx_position, cav_speed = load_loc_speed(tx_cav_yaml)
-        tx = Transmitter(name="tx", position=tx_position, orientation=[0, 0, 0])
+        tx_position, tx_rot, cav_speed = load_loc_speed(tx_cav_yaml)
+        tx = Transmitter(name="tx", position=tx_position, orientation=tx_rot)
         scene.add(tx)
 
         for j in range(num_cav):
             if j == i:
                 continue
             rx_cav_yaml = os.path.join(all_cav_data_paths[j], f"{frame_id}.yaml")
-            rx_position, cav_speed_rx = load_loc_speed(rx_cav_yaml)
+            rx_position, rx_rot, cav_speed_rx = load_loc_speed(rx_cav_yaml)
 
-            rx = Receiver(name=f'rx_{j}', position=rx_position, orientation=[0, 0, 0])
+            rx = Receiver(name=f'rx_{j}', position=rx_position, orientation=rx_rot)
             scene.add(rx)
 
             # paths = scene.compute_paths(max_depth=1, num_samples=3e5, scattering=True)

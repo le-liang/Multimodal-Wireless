@@ -121,7 +121,7 @@ sensors:
         lower_fov: '-25'
         dropoff_general_rate: '0'
         dropoff_intensity_limit: '1'
-      transform: { location: {x: 0, z: 4} }
+      transform: { location: {x: 0, z: 4}, rotation: {pitch: 0, yaw: -90} }
     radar:
       blueprint: "sensor.other.radar"
       attributes:

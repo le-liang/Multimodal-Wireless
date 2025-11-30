@@ -49,12 +49,12 @@ from sionna.nr import PUSCHConfig, PUSCHTransmitter, PUSCHReceiver
 from sionna.utils import compute_ber, ebnodb2no, PlotBER
 from sionna.ofdm import KBestDetector, LinearDetector
 from sionna.mimo import StreamManagement
-from data_utils import load_loc_speed, H_data_storage, dim_police
+from data_utils import load_loc_speed, H_data_storage, dim_police, aod_transform
 # Set random seed for reproducibility
 sionna.config.seed = 42
 
 # Discover CAV data folders dynamically under the data root directory
-data_root = '4_data'
+data_root = '/data/CARLA_dataset_sunny/Town03/Town03_5wayroad_seed28'
 all_cav_data_paths = [
     os.path.join(data_root, d)
     for d in sorted(os.listdir(data_root))
@@ -167,10 +167,14 @@ for yaml_filename in yaml_files_in_ref_dir:
                 paths = scene.compute_paths(max_depth=1, num_samples=3e5, scattering=True)
                 a, tau = paths.cir()
 
+            theta_t, phi_t = aod_transform(paths.theta_t, paths.phi_t, tx_rot)
+            theta_r, phi_r = aod_transform(paths.theta_r, paths.phi_r, rx_rot)
             path_properties_cav = {
                 'a': a, 'tau': paths.tau,
-                'theta_t': paths.theta_t, 'phi_t': paths.phi_t,
-                'theta_r': paths.theta_r, 'phi_r': paths.phi_r
+                'theta_t': theta_t, 'phi_t': phi_t,
+                'theta_r': theta_r, 'phi_r': phi_r,
+                'glob_theta_t': paths.theta_t, 'glob_phi_t': paths.phi_t,
+                'glob_theta_r': paths.theta_r, 'glob_phi_r': paths.phi_r
             }
 
             print(f"Channel coefficient: {a.shape}")

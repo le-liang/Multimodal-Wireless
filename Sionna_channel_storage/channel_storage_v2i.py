@@ -44,14 +44,14 @@ from sionna.nr import PUSCHConfig, PUSCHTransmitter, PUSCHReceiver
 from sionna.utils import compute_ber, ebnodb2no, PlotBER
 from sionna.ofdm import KBestDetector, LinearDetector
 from sionna.mimo import StreamManagement
-from data_utils import load_loc_speed, H_data_storage, dim_police
+from data_utils import load_loc_speed, H_data_storage, dim_police, aod_transform
 # Set random seed for reproducibility
 sionna.config.seed = 42
 
-data_folder_cav1 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/cav_1'
-data_folder_cav2 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/cav_2'
-data_folder_cav3 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/cav_3'
-data_folder_rsu1 = '/home/ryan4080/mth/Multimodal-Wireless-main/dumper/Town07_crossroad_rural_seed42/rsu_1'
+data_folder_cav1 = '/data/CARLA_dataset_sunny/Town03/Town03_roundabout_seed42/cav_1'
+data_folder_cav2 = '/data/CARLA_dataset_sunny/Town03/Town03_roundabout_seed42/cav_2'
+data_folder_cav3 = '/data/CARLA_dataset_sunny/Town03/Town03_roundabout_seed42/cav_3'
+data_folder_rsu1 = '/data/CARLA_dataset_sunny/Town03/Town03_roundabout_seed42/rsu_1'
 scenes_folder = '/data/scene_generator'  # Root folder for scenes (e.g., scenes/0402/0402.xml)
 
 all_cav_data_paths = [data_folder_cav1, data_folder_cav2, data_folder_cav3]
@@ -147,18 +147,23 @@ for yaml_filename in yaml_files_in_ref_dir:
 
             current_shape = a.shape
             if dim_police(a.shape):
-                paths = scene.compute_paths(max_depth=1, num_samples=3e5, scattering=True)
-                a, tau = paths.cir()
+                # paths = scene.compute_paths(max_depth=1, num_samples=3e5, scattering=True)
+                # a, tau = paths.cir()
+                sys.exit(0)
 
+            theta_t, phi_t = aod_transform(paths.theta_t, paths.phi_t, tx_rot)
+            theta_r, phi_r = aod_transform(paths.theta_r, paths.phi_r, ue_rot)
             path_properties_cav = {
                 'a': a, 'tau': paths.tau,
-                'theta_t': paths.theta_t, 'phi_t': paths.phi_t,
-                'theta_r': paths.theta_r, 'phi_r': paths.phi_r
+                'theta_t': theta_t, 'phi_t': phi_t,
+                'theta_r': theta_r, 'phi_r': phi_r,
+                'glob_theta_t': paths.theta_t, 'glob_phi_t': paths.phi_t,
+                'glob_theta_r': paths.theta_r, 'glob_phi_r': paths.phi_r
             }
 
             print(f"Channel coefficient: {a.shape}")
             save_path = os.path.join(
-                f"Nt_{cfg['tx_cols']}_Nr_{cfg['rx_cols']}_fc_{int(scene.frequency / 1e9)}GHz_new",
+                f"Nt_{cfg['tx_cols']}_Nr_{cfg['rx_cols']}_fc_{int(scene.frequency / 1e9)}GHz_3",
                 cav_id_str
             )
             os.makedirs(save_path, exist_ok=True)

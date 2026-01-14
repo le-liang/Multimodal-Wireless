@@ -2,6 +2,10 @@ import numpy as np
 import yaml
 import os
 import sys
+import tensorflow as tf
+from sionna.rt.utils import r_hat, rotation_matrix, theta_phi_from_unit_vec, expand_to_rank
+import pandas as pd
+
 def load_loc_speed(filepath):
     with open(filepath, 'r') as f:
         data = yaml.safe_load(f)
@@ -46,3 +50,17 @@ def dim_police(current_shape):
         print(error_message, file=sys.stderr)
         r = 1
     return r
+
+def aod_transform(paths_theta_t, paths_phi_t, orientation):
+    k_t_gcs = r_hat(paths_theta_t, paths_phi_t)
+
+    # Ensure orientation is a tensor to avoid "list indices must be integers or slices, not tuple" error
+    orientation_tensor = tf.convert_to_tensor(orientation, dtype=tf.float32)
+    rot_mat = tf.transpose(rotation_matrix(orientation_tensor))
+    rot_mat = expand_to_rank(rot_mat, tf.rank(k_t_gcs) + 1, 0)
+    k_t_lcs = tf.linalg.matvec(rot_mat, k_t_gcs)
+
+    # Compute zenith and azimuth angles in the LCS (see Eq. (2) of the EM Primer)
+    theta_t_lcs, phi_t_lcs = theta_phi_from_unit_vec(k_t_lcs)
+
+    return theta_t_lcs, phi_t_lcs

@@ -121,6 +121,7 @@ class SensorDataManager:
 
     def yaml_dumper(self, frame_id, world, cav_vehicles_dict, sensors_dict, rsu_actors_dict, rsu_sensors_dict,
                     all_spawned_vehicle_actors, localization_managers=None):
+        perception_range = 50.0
         for cav_label, cav_vehicle in cav_vehicles_dict.items():
             if cav_vehicle is None or not cav_vehicle.is_alive:
                 continue
@@ -129,7 +130,6 @@ class SensorDataManager:
                 continue
 
             vehicles_data_formatted = {}
-            perception_range = 50.0
             ego_location = cav_vehicle.get_location()
 
             for rsu_label, rsu_anchor in rsu_actors_dict.items():
@@ -239,21 +239,6 @@ class SensorDataManager:
             yaml_content = yaml.dump(data_dict, Dumper=CustomDumper, default_flow_style=False, sort_keys=False)
             self.executor.submit(self.write_yaml_async, yaml_path, yaml_content)
 
-        all_vehicle_data_for_rsu = []
-        for veh in all_spawned_vehicle_actors:
-            if not veh or not veh.is_alive:
-                continue
-            veh_tf = veh.get_transform()
-            all_vehicle_data_for_rsu.append({
-                'id': veh.id,
-                'name': veh.type_id,
-                'pose': {
-                    'location': {'x': veh_tf.location.x, 'y': veh_tf.location.y, 'z': veh_tf.location.z},
-                    'rotation': {'pitch': veh_tf.rotation.pitch, 'roll': veh_tf.rotation.roll,
-                                 'yaw': veh_tf.rotation.yaw}
-                }
-            })
-
         for rsu_label, rsu_anchor in rsu_actors_dict.items():
             if rsu_anchor is None or not rsu_anchor.is_alive:
                 continue
@@ -261,11 +246,57 @@ class SensorDataManager:
             if not save_dir:
                 continue
 
+            rsu_detected_objects = {}
+            rsu_location = rsu_anchor.get_location()
+
+            for veh in all_spawned_vehicle_actors:
+                if not veh or not veh.is_alive:
+                    continue
+                if rsu_location.distance(veh.get_location()) > perception_range:
+                    continue
+
+                veh_tf = veh.get_transform()
+                veh_bbx = veh.bounding_box
+                veh_vel = veh.get_velocity()
+                veh_speed = float(np.sqrt(veh_vel.x ** 2 + veh_vel.y ** 2 + veh_vel.z ** 2))
+                veh_color = veh.attributes.get('color', '255,255,255')
+
+                rsu_detected_objects[veh.id] = {
+                    'bp_id': veh.type_id,
+                    'color': veh_color,
+                    "location": [veh_tf.location.x, veh_tf.location.y, veh_tf.location.z],
+                    "center": [veh_bbx.location.x, veh_bbx.location.y, veh_bbx.location.z],
+                    "angle": [veh_tf.rotation.roll, veh_tf.rotation.yaw, veh_tf.rotation.pitch],
+                    "extent": [veh_bbx.extent.x, veh_bbx.extent.y, veh_bbx.extent.z],
+                    "speed": veh_speed
+                }
+
+            for other_rsu_label, other_rsu_actor in rsu_actors_dict.items():
+                if other_rsu_label == rsu_label:
+                    continue
+                if other_rsu_actor is None or not other_rsu_actor.is_alive:
+                    continue
+                if rsu_location.distance(other_rsu_actor.get_location()) > perception_range:
+                    continue
+                rsu_bbx = other_rsu_actor.bounding_box
+                rsu_tf = other_rsu_actor.get_transform()
+                rsu_speed_vec = other_rsu_actor.get_velocity()
+                rsu_speed = float(np.sqrt(rsu_speed_vec.x ** 2 + rsu_speed_vec.y ** 2 + rsu_speed_vec.z ** 2))
+                rsu_detected_objects[other_rsu_actor.id] = {
+                    'bp_id': other_rsu_actor.type_id,
+                    'color': '0,0,0',
+                    "location": [rsu_tf.location.x, rsu_tf.location.y, rsu_tf.location.z],
+                    "center": [rsu_bbx.location.x, rsu_bbx.location.y, rsu_bbx.location.z],
+                    "angle": [rsu_tf.rotation.roll, rsu_tf.rotation.yaw, rsu_tf.rotation.pitch],
+                    "extent": [rsu_bbx.extent.x, rsu_bbx.extent.y, rsu_bbx.extent.z],
+                    "speed": rsu_speed
+                }
+
             data_dict = {
                 'actor': rsu_label,
                 'frame': frame_id,
                 'sensors': {'cameras': {}, 'depth_cameras': {}},
-                'vehicles': all_vehicle_data_for_rsu
+                'vehicles': rsu_detected_objects
             }
 
             rsu_tf = rsu_anchor.get_transform()
@@ -345,5 +376,3 @@ class SensorDataManager:
     def shutdown(self):
         if self.executor:
             self.executor.shutdown(wait=True)
-
-

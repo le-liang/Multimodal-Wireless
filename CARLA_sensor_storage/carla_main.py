@@ -173,6 +173,7 @@ if __name__ == '__main__':
 
     actual_sensors_listening = 0
     cav_sensor_config = config['sensors']['cav']
+    rsu_sensor_config = config['sensors'].get('rsu', {})
     if num_cav_to_select > 0:
         for cav_label, vehicle in cav_vehicles_dict.items():
             # --- Spawning Cameras ---
@@ -266,7 +267,7 @@ if __name__ == '__main__':
             actor_data_store[rsu_label] = {"save_dir": actor_save_dir}
             rsu_sensors_dict[rsu_label] = {"cameras": {}, "depth_cameras": {}, "lidar": None, "radar": None}
 
-            for sensor_type_key, sensor_config in config['sensors']['rsu'].items():
+            for sensor_type_key, sensor_config in rsu_sensor_config.items():
                 bp = blueprint_library.find(sensor_config['blueprint'])
                 for attr, val in sensor_config.get('attributes', {}).items():
                     bp.set_attribute(attr, str(val))

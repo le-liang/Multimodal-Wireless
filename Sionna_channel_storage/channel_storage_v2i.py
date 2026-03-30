@@ -18,7 +18,7 @@ else:
 
 tf.get_logger().setLevel('ERROR')
 
-try: # detect if the notebook runs in Colab
+try:  # detect if the notebook runs in Colab
     import google.colab
     no_preview = True # deactivate preview
 except:

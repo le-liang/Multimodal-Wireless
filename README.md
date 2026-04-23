@@ -83,3 +83,5 @@ Generally, the generation of dataset includes three steps:
 - Sionna: Load the scene of each frame and compute multi-path components and generate the corresponding channel.
 
 ➡️ **Watch the Tutorial on** [YouTube](https://youtu.be/M0qTrLj61aM) or [Bilibili](https://www.bilibili.com/video/BV1r11nBGEaV/?spm_id_from=333.1387.homepage.video_card.click&vd_source=96080c7f8528346ec45df46d67c8d3e1)
+
+Note: ./Sionnal_channel_storage/channel_storage_v2i.py collects channels with LOS paths, with the reflection mode on and the scattering mode off. To dump pure NLOS channels, one should refer to ./Sionnal_channel_storage/channel_storage_v2v.py which involves the scattering paths calculation when no LOS paths or other reflection paths exists.

@@ -2,14 +2,28 @@
 
 This guide provides instructions on how to set up the environment and software needed to extend or replay the Multimodal-Wireless dataset.
 
+## What's New
+
+### 🚀 v1.1.0 — Accelerated Data Generation
+
+- **Upgraded pipeline:** Reuse the static scene and update dynamic vehicle poses frame by frame in Sionna RT, replacing the previous workflow of exporting and loading a complete scene for every frame.
+- **20× faster generation:** The pipeline redesign, together with code-level optimizations, reduces total generation time by approximately **95%** for the same workload while preserving the generated results.
+- **Lower storage requirements:** Eliminate the need to generate and store a separate full scene for every frame, removing the large intermediate scene-storage overhead of long sequences.
+- **Bug fix:** Address a minor issue reported by the community.
+
+> **Note:** The pipeline architecture update itself does not change the channel results. Minor differences in the generated channels between the original version and v1.1.0 arise solely from this issue fix (mean channel NMSE of -19.3 dB).
+
+See the [detailed pipeline comparison](https://le-liang.github.io/mmw/tutorials.html#accelerated-pipeline) for the original and accelerated workflows.
+
 ## Table of Contents
 
-- [Prerequisites](#-prerequisites)
-- [Installation Guide](#-installation-guide)
+- [What's New](#whats-new)
+- [Prerequisites](#prerequisites)
+- [Installation Guide](#installation-guide)
   - [1. Setting up the Python Environment](#1-setting-up-the-python-environment)
   - [2. Setting up Blender with Mitsuba Renderer](#2-setting-up-blender-with-mitsuba-renderer)
   - [3. Setting up CARLA Simulator](#3-setting-up-carla-simulator)
-- [How to Extend/Replay](#️-how-to-use)
+- [How to Extend/Replay](#how-to-extendreplay)
 
 ## Prerequisites
 
@@ -77,11 +91,12 @@ This project is compatible with a specific version of the CARLA simulator.
 
 Once your environment and software are fully set up, you can begin the extension or replay process by following the detailed steps in our tutorial video.
 
-Generally, the generation of dataset includes three steps:
+The tutorial demonstrates the original three-step workflow below. See the [pipeline comparison](https://le-liang.github.io/mmw/tutorials.html#accelerated-pipeline) for the v1.1.0 update:
+
 - CARLA: Define the scenario in CARLA via the config file and implement it via carla_main.py, which produces five sensor data and the yaml file of all frames simultaneously.
-- Blender: Reconstruct the whole scenario frame by frame in Blender based on the .yaml file of each frame.
-- Sionna: Load the scene of each frame and compute multi-path components and generate the corresponding channel.
+- Blender: Reconstruct the whole scenario of the first frame in Blender based on the .yaml file.
+- Sionna: Load the scene of the first frame in Sionna. For each new frame, move the vehicle objects in Sionna, compute multi-path components and generate the corresponding channel.
 
 ➡️ **Watch the Tutorial on** [YouTube](https://youtu.be/M0qTrLj61aM) or [Bilibili](https://www.bilibili.com/video/BV1r11nBGEaV/?spm_id_from=333.1387.homepage.video_card.click&vd_source=96080c7f8528346ec45df46d67c8d3e1)
 
-Note: ./Sionnal_channel_storage/channel_storage_v2i.py collects channels with LOS paths, with the reflection mode on and the scattering mode off. To dump pure NLOS channels, one should refer to ./Sionnal_channel_storage/channel_storage_v2v.py which involves the scattering paths calculation when no LOS paths or other reflection paths exists.
+Note: ./Sionna_channel_storage/channel_storage_v2i.py collects channels with LOS paths, with the reflection mode on and the scattering mode off. To dump pure NLOS channels, one should refer to ./Sionna_channel_storage/channel_storage_v2v.py which involves the scattering paths calculation when no LOS paths or other reflection paths exists.

@@ -9,7 +9,7 @@ This guide provides instructions on how to set up the environment and software n
 - **Upgraded pipeline:** Reuse the static scene and update dynamic vehicle poses frame by frame in Sionna RT, replacing the previous workflow of exporting and loading a complete scene for every frame.
 - **20× faster generation:** The pipeline redesign, together with code-level optimizations, reduces total generation time by approximately **95%** for the same workload while preserving the generated results.
 - **Lower storage requirements:** Eliminate the need to generate and store a separate full scene for every frame, removing the large intermediate scene-storage overhead of long sequences.
-- **Bug fix:** Address a minor issue reported by the community.
+- **Bug fix:** Address a minor issue reported by [issue](https://github.com/le-liang/Multimodal-Wireless/issues/1).
 
 > **Note:** The pipeline architecture update itself does not change the channel results. Minor differences in the generated channels between the original version and v1.1.0 arise solely from this issue fix (mean channel NMSE of -19.3 dB).
 

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multimodal-Wireless Dataset</title>
+    <link rel="preload" as="image" href="html_assets/hero-poster.webp" fetchpriority="high">
+    <style>
+        /* --- 全局样式 --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- 容器样式 --- */
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- 标题和文本 --- */
+        h1, h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* --- 链接和按钮 --- */
+        .links {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .button-link {
+            display: inline-block;
+            padding: 14px 20px;
+            margin: 0;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .button-link:hover, .button-link:focus {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* --- 左右双色拼接按钮 --- */
+        .split-button {
+            display: inline-flex;
+            align-items: stretch;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+        .split-button a {
+            display: inline-block;
+            padding: 12px 16px;
+            text-decoration: none;
+            font-weight: 700;
+            color: #fff;
+            transition: filter 0.25s ease, transform 0.2s ease;
+            white-space: nowrap;
+        }
+        .split-button a:focus, .split-button a:hover {
+            filter: brightness(0.92);
+            transform: translateY(-1px);
+        }
+        .split-left {
+            background-color: #007bff; /* 蓝色 - 英文 */
+        }
+        .split-right {
+            background-color: #28a745; /* 绿色 - 中文 */
+        }
+
+        /* --- 下拉按钮样式（主按钮 + 选项） --- */
+        .dropdown {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+        .dropdown .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border-radius: 6px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background-color 0.25s ease, transform 0.2s ease;
+            cursor: pointer;
+            user-select: none;
+            width: 100%;
+            justify-content: center; /* 文本居中 */
+            position: relative; /* 供箭头绝对定位 */
+            font-size: 1rem;
+        }
+        .dropdown .btn.primary { background-color: #007bff; }
+        .dropdown .btn.primary:hover, .dropdown .btn.primary:focus { background-color: #005ec7; transform: translateY(-1px); }
+        .dropdown .btn.secondary { background-color: #6c63ff; }
+        .dropdown .btn.secondary:hover, .dropdown .btn.secondary:focus { background-color: #584ef0; transform: translateY(-1px); }
+        .dropdown .caret {
+            font-size: 0.9em;
+            opacity: 0.9;
+            position: absolute;
+            right: 12px; /* 箭头固定在最右侧 */
+        }
+        .dropdown .menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 100%;
+            background: #fff;
+            border: 1px solid #e6eef7;
+            border-radius: 8px;
+            box-shadow: 0 10px 26px rgba(24,48,96,0.14);
+            padding: 6px;
+            display: none;
+            z-index: 50;
+        }
+        .dropdown:hover .menu, .dropdown:focus-within .menu { display: block; }
+        .dropdown .menu a {
+            display: block;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: #2b3a4e;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.15s ease, color 0.15s ease;
+            white-space: nowrap;
+        }
+        .dropdown .menu a small { color: #6b7c93; font-weight: 500; }
+        .dropdown .menu a:hover, .dropdown .menu a:focus { background: #edf3fa; color: #254f86; }
+
+        /* --- 图片样式 --- */
+        .teaser-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: block;
+        }
+
+        /* --- 引用代码块 --- */
+        pre {
+            background-color: #f4f4f4;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto; /* 移动端代码不换行时可以滚动 */
+            white-space: pre-wrap; /* 自动换行 */
+            word-wrap: break-word;
+        }
+
+        code {
+            font-family: "Courier New", Courier, monospace;
+        }
+        
+        /* --- 页脚 --- */
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9em;
+            color: #777;
+        }
+        /* --- 顶部导航栏 --- */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffffea;
+            backdrop-filter: saturate(150%) blur(6px);
+            border-bottom: 1px solid #e8eef6;
+        }
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.6rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+        .brand {
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: 0.02em;
+            color: #254f86;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .nav-links a {
+            color: #365676;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            white-space: nowrap;
+        }
+        .nav-links a:hover, .nav-links a:focus {
+            background-color: #edf3fa;
+            color: #254f86;
+        }
+        .nav-links a.active {
+            background-color: #e6f0ff;
+            color: #1b4fb8;
+        }
+        @media (max-width: 720px) {
+            .topbar-inner { padding: 0.55rem 0.9rem; }
+            .nav-links { gap: 10px; }
+        }
+        /* --- Hero 顶部视频背景 --- */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            min-height: 360px;
+            max-height: 720px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .hero video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: 2160px;
+            height: 1080px;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            filter: brightness(65%);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 1.5rem;
+            color: #fff;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 4vw + 1rem, 3rem);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0 0 1rem 0;
+            text-shadow: 0 6px 24px rgba(0,0,0,0.35);
+            color: #f0f4ff;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(0.95rem, 1vw + 0.6rem, 1.2rem);
+            opacity: 0.9;
+            margin: 0 0 1.25rem 0;
+        }
+
+        .hero-controls {
+            display: inline-flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.25s ease, transform 0.2s ease;
+        }
+
+        .upload-btn:hover, .upload-btn:focus {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        /* --- 数据集说明区块 --- */
+        .dataset-desc {
+            margin: 0 auto 2.5rem auto;
+            max-width: 1500px; /* 更宽以适应4列布局 */
+            width: 95%;
+            background: linear-gradient(120deg, #f6faff 88%, #e7f0f6 100%);
+            padding: 1.1rem 2.5rem 2.5rem 2.5rem; /* padding-top 缩小 */
+            border-radius: 13px;
+            box-shadow: 0 4px 24px 1px rgba(30,44,100,0.09);
+            position: relative;
+            z-index: 1;
+            margin-top: 2.2rem; /* 顶部留白缩小，视觉更均衡 */
+        }
+        .dataset-desc-flex {
+            display: flex;
+            align-items: center; /* 垂直居中内容（按钮/文本） */
+            justify-content: center; /* 修改：居中对齐 */
+            gap: 60px; /* 修改：调整间距 */
+            flex-wrap: wrap; /* 新增：允许换行以增强响应性 */
+        }
+        .dataset-desc-btn-col {
+            flex: 0 0 260px;
+            margin-left: 24px;
+            margin-right: 24px; /* 整体左移，避免贴右侧边缘 */
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* 加大四个按钮的纵向间距 */
+            align-items: stretch;
+        }
+        .dataset-desc-btn-col .button-link { display: block; width: 100%; }
+        .dataset-desc-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: #315782;
+            letter-spacing: 0.1em;
+            border-bottom: none;
+            text-align: left;
+        }
+        .dataset-desc-summary {
+            font-size: 1.15rem;
+            color: #405060;
+            margin-bottom: 1.1rem;
+            margin-top: 0.15rem;
+            font-weight: 500;
+        }
+        .dataset-desc-list {
+            list-style: none;
+            padding: 0 0 0 0.1rem;
+            margin: 0;
+        }
+        .dataset-desc-list li {
+            display: flex;
+            align-items: flex-start;
+            font-size: 1.08rem;
+            color: #2b3a4e;
+            margin-bottom: 0.75rem;
+            line-height: 1.65;
+            font-weight: 500;
+        }
+        .bullet-cube {
+            font-size: 1.52em;
+            margin-right: 0.82em;
+            color: #297bfa;
+            flex-shrink: 0;
+            line-height: 1.15;
+        }
+        .multimodal-section {
+            max-width: 1500px; /* 更宽以适应4列布局 */
+            margin: 2.5rem auto 3rem auto;
+            background: #f9fbff;
+            padding: 2.5rem 2.5rem 2.5rem 2.5rem;
+            border-radius: 14px;
+            box-shadow: 0 3px 18px 0px rgba(70, 110, 170, 0.13);
+        }
+        .multimodal-title {
+            text-align: center;
+            margin-bottom: 2.1rem;
+            font-size: 1.5rem;
+            color: #2d407a;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+        .multimodal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px 36px;
+            justify-items: center;
+            align-items: start;
+            padding: 0 0.5rem;
+        }
+        .modality-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background: #fff;
+            border-radius: 11px;
+            box-shadow: 0 2px 10px 0px rgba(20,37,70,0.11);
+            padding: 1.2rem 1.1rem 0.7rem 1.1rem;
+            width: 320px;
+            height: 270px;
+            min-width: 320px;
+            min-height: 270px;
+            box-sizing: border-box;
+        }
+        .modality-img {
+            display: block;
+            width: 290px;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 1px 8px 0px rgba(34,53,80,0.10);
+            margin-bottom: 0.82rem;
+        }
+        .modality-label {
+            font-size: 1.07rem;
+            color: #36689f;
+            font-weight: 700;
+            margin-top: 0.15rem;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+        /* Pipeline update: scoped styles preserve the existing page design. */
+        .pipeline-update {
+            scroll-margin-top: 6rem;
+            box-sizing: border-box;
+            max-width: 1500px;
+            width: calc(100% - 3rem);
+            margin: 2.5rem auto;
+            padding: 1.5rem 2rem;
+            border-left: 4px solid #297bfa;
+            border-radius: 13px;
+            background: #f6faff;
+            box-shadow: 0 4px 24px 1px rgba(30,44,100,0.09);
+            color: #405060;
+        }
+        .pipeline-update h2 { color: #315782; border-bottom: none; margin: 0 0 0.5rem; padding: 0; font-size: 1.5rem; }
+        .pipeline-update .update-label { color: #315782; font-weight: 700; margin: 0 0 0.4rem; }
+        .pipeline-update .update-metric { color: #254f86; font-size: 1.2rem; margin: 0.5rem 0; }
+        .pipeline-update .update-note { font-size: 0.95rem; }
+        .pipeline-update a { color: #1b4fb8; text-decoration: underline; text-underline-offset: 3px; }
+        .pipeline-update .update-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-bottom: 0; }
+        @media (max-width: 720px) {
+            .pipeline-update { width: calc(100% - 2rem); padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html">Multimodal-Wireless</a>
+            <nav class="nav-links" aria-label="Primary">
+                <a href="index.html" class="active" aria-current="page">Overview</a>
+                <a href="scenarios.html">Scenarios</a>
+                <a href="paper.html">Paper</a>
+                <a href="https://github.com/le-liang/Multimodal-Wireless" target="_blank">Code</a>
+                <a href="data-collection.html">Data Collection</a>
+                <a href="tutorials.html">Tutorials</a>
+                <a href="download.html">Download Dataset</a>
+                <a href="https://www.liang-seu.net/" target="_blank" rel="noopener">Research Team</a>
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <video id="heroVideo" src="202510301340.mp4" poster="html_assets/hero-poster.webp" preload="auto" autoplay muted loop playsinline></video>
+        <div class="hero-overlay">
+            <h1 class="hero-title">Multimodal-Wireless</h1>
+            <p class="hero-subtitle">A Large-Scale Open-Source Dataset for Multimodal Sensing and Communication Research</p>
+        </div>
+    </section>
+    <section class="dataset-desc">
+        <div class="dataset-desc-flex">
+            <!-- 修改：调整了flex比例，使文本区域不会过宽 -->
+            <div style="flex: 1.5; min-width: 320px;">
+                <h2 class="dataset-desc-title">What is Multimodal-Wireless?</h2>
+                <p class="dataset-desc-summary">
+                    Multimodel-Wireless is a large-scale open-source dataset for multimodal sensing and communication research. It is generated through an integrated and customizable data pipeline built upon the CARLA simulator and Sionna framework, and features high-resolution communication channel state information (CSI) fully synchronized with five other sensor modalities, namely LiDAR, RGB and depth camera, inertial measurement unit (IMU) and radar, all sampled at 100&nbsp;Hz. 
+                </p>
+                <ul class="dataset-desc-list">
+                    <li><span class="bullet-cube">&#10022;</span> 161,400 frames collected across 4 virtual towns, 16 communication scenarios, and 3 weather conditions. </li>
+                    <li><span class="bullet-cube">&#10022;</span> High-resolution CSI obtained from ray tracing in Sionna and sampled at 100&nbsp;Hz for diverse applications, along with 100&nbsp;Hz oversampled, temporal aligned sensor data which can be easily downsampled for practical usage.</li>
+                    <li><span class="bullet-cube">&#10022;</span> All-weather resilience by design.</li>
+                    <li><span class="bullet-cube">&#10022;</span> Full flexibility and extensibility by simply modifying a configuration file.</li>
+                    <li><span class="bullet-cube">&#10022;</span> A unified resource for vehicle-to-everything (V2X) communication and perception.</li>
+                </ul>
+            </div>
+            <!-- 修改：删除了导致巨大间隙的空div -->
+            <!-- 修改：将视频容器修改为2*2网格布局 -->
+            <div style="flex: 1; display: flex; flex-wrap: wrap; gap: 19px; justify-content: center; align-items: center; max-width: 550px; min-width: 300px;">
+                <video data-src="Videos/Town10/Hroad.mp4" data-poster="Videos/Town10/Hroad.webp" loop muted playsinline style="width: 48%; height: auto; aspect-ratio: 4/3; border-radius: 11px; box-shadow: 0 4px 12px rgba(30, 44, 70, 0.08);" preload="none"></video>
+                <video data-src="Videos/Town10/skybridge.mp4" data-poster="Videos/Town10/skybridge.webp" loop muted playsinline style="width: 48%; height: auto; aspect-ratio: 4/3; border-radius: 11px; box-shadow: 0 4px 12px rgba(30, 44, 70, 0.08);" preload="none"></video>
+                <video data-src="Videos/Town05/beneath.mp4" data-poster="Videos/Town05/beneath.webp" loop muted playsinline style="width: 48%; height: auto; aspect-ratio: 4/3; border-radius: 11px; box-shadow: 0 4px 12px rgba(30, 44, 70, 0.08);" preload="none"></video>
+                <video data-src="Videos/Town03/5wayroad.mp4" data-poster="Videos/Town03/5wayroad.webp" loop muted playsinline style="width: 48%; height: auto; aspect-ratio: 4/3; border-radius: 11px; box-shadow: 0 4px 12px rgba(30, 44, 70, 0.08);" preload="none"></video>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pipeline-update" id="pipeline-update" aria-labelledby="pipeline-update-title">
+        <p class="update-label">Pipeline Update Preview</p>
+        <h2 id="pipeline-update-title">🚀 Accelerated Data Generation</h2>
+        <p class="update-metric"><strong>20&times; faster generation &middot; approximately 95% less total time</strong></p>
+        <p>The architecture update reuses the static scene and updates dynamic vehicles frame by frame in the Sionna RT workflow, reducing repeated scene preparation and loading for custom dataset generation.</p>
+        <p class="update-note">Speedup reported by the authors for the same workload; detailed benchmark timings and conditions are pending. Results may vary by scenario and hardware. Release details are forthcoming.</p>
+        <p class="update-links"><a href="tutorials.html#accelerated-pipeline">Explore the architecture</a><a href="https://github.com/le-liang/Multimodal-Wireless" target="_blank" rel="noopener">Project on GitHub</a></p>
+    </section>
+
+    <!-- 多模态数据模块 -->
+    <section class="multimodal-section">
+        <h2 class="multimodal-title">Multimodal Data Involved</h2>
+        <div class="multimodal-grid">
+            <div class="modality-item">
+                <img data-src="html_assets/channel.webp" alt="Channel" class="modality-img" width="976" height="666" decoding="async" loading="lazy">
+                <div class="modality-label">Channel</div>
+            </div>
+            <div class="modality-item">
+                <img data-src="html_assets/LiDAR.webp" alt="LiDAR" class="modality-img" width="1442" height="1136" decoding="async" loading="lazy">
+                <div class="modality-label">LiDAR</div>
+            </div>
+            <div class="modality-item">
+                <img data-src="html_assets/depthcamera.webp" alt="Depth Map" class="modality-img" width="640" height="480" decoding="async" loading="lazy">
+                <div class="modality-label">Depth Map</div>
+            </div>
+            <div class="modality-item">
+                <img data-src="html_assets/gps.webp" alt="GNSS" class="modality-img" width="8545" height="5928" decoding="async" loading="lazy">
+                <div class="modality-label">GNSS</div>
+            </div>
+            <div class="modality-item">
+                <img data-src="html_assets/camera.webp" alt="RGB" class="modality-img" width="640" height="480" decoding="async" loading="lazy">
+                <div class="modality-label">RGB</div>
+            </div>
+            <div class="modality-item">
+                <img data-src="html_assets/radar.webp" alt="Radar" class="modality-img" width="2650" height="2131" decoding="async" loading="lazy">
+                <div class="modality-label">Radar</div>
+            </div>
+            <div class="modality-item">
+                <img data-src="html_assets/boundingbox.webp" alt="Bounding Box" class="modality-img" width="2664" height="1724" decoding="async" loading="lazy">
+                <div class="modality-label">Bounding Box</div>
+            </div>
+            <div class="modality-item">
+                <img data-src="html_assets/imu.webp" alt="IMU" class="modality-img" width="2069" height="1142" decoding="async" loading="lazy">
+                <div class="modality-label">IMU</div>
+            </div>
+
+        </div>
+    </section>
+    
+    <div class="container">
+        
+
+        <main>
+            <h2>License and Citation</h2>
+            <p>
+                This dataset is licensed under the 
+                <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"
+                 style="font-weight:bold; color:#297bfa; text-decoration:underline;">Creative Commons Attribution 4.0 International License</a>.
+            </p>
+            <p>If the Multimodal-Wireless Dataset is helpful for your research, please kindly cite the ICC 2026 paper：</p>
+            <pre><code>@inproceedings{mao2026mmw,
+title = {Multimodal-Wireless: A Large-Scale Dataset for Sensing and Communication},
+author = {Tianhao Mao and Le Liang and Jie Yang and Hao Ye and Shi Jin and Geoffrey Ye Li},
+booktitle = {IEEE International Conference on Communications (ICC)},
+year = {2026}
+}</code></pre>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 LLGroup. Email: lliang@seu.du.cn </p>
+        </footer>
+    </div>
+
+    
+    <script src="html_assets/media-loader.js" defer></script>
+</body>
+</html>

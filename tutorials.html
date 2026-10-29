@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorials - Multimodal-Wireless</title>
+    <style>
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background:#f8f9fa; }
+        .topbar { position: sticky; top: 0; z-index: 999; background: #ffffffea; backdrop-filter: saturate(150%) blur(6px); border-bottom: 1px solid #e8eef6; }
+        .topbar-inner { max-width: 1200px; margin: 0 auto; padding: 0.6rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+        .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: 0.02em; color: #254f86; text-decoration: none; white-space: nowrap; }
+        .nav-links { display: flex; align-items: center; gap: 16px; }
+        .nav-links a { color: #365676; text-decoration: none; font-weight: 600; padding: 8px 10px; border-radius: 8px; transition: background-color 0.2s ease, color 0.2s ease; white-space: nowrap; }
+        .nav-links a:hover, .nav-links a:focus { background-color: #edf3fa; color: #254f86; }
+        .nav-links a.active { background-color: #e6f0ff; color: #1b4fb8; }
+        .container { max-width: 1100px; margin: 2rem auto; padding: 1.5rem; background:#fff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        h1 { margin: 0 0 0.5rem 0; font-size: 1.6rem; color:#2c3e50; }
+        p { color:#54647a; line-height: 1.6; }
+        ul { margin: 1rem 0; padding-left: 1.5rem; }
+        li { margin: 0.75rem 0; color:#54647a; line-height: 1.6; }
+        a { color: #254f86; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        img { display: block; margin: 1.5rem auto; border-radius: 4px; max-width: 100%; height: auto; }
+        .video-container { margin: 2rem 0; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .video-label { margin-bottom: 0.5rem; font-weight: 600; color: #2c3e50; }
+    </style>
+    </head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html">Multimodal-Wireless</a>
+            <nav class="nav-links" aria-label="Primary">
+                <a href="index.html">Overview</a>
+                <a href="scenarios.html">Scenarios</a>
+                <a href="paper.html">Paper</a>
+                <a href="https://github.com/le-liang/Multimodal-Wireless" target="_blank">Code</a>
+                <a href="data-collection.html">Data Collection</a>
+                <a href="tutorials.html" class="active" aria-current="page">Tutorials</a>
+                <a href="download.html">Download Dataset</a>
+                <a href="https://www.liang-seu.net/" target="_blank" rel="noopener">Research Team</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Tutorials</h1>
+        <p>The multimodality is composed of five sensory data (LiDAR, RGB and depth camera, IMU and radar) collected in CARLA and channel multi-path information collected in Sionna. The original workflow is illustrated in the following figure:</p>
+        <img src="html_assets/pipeline_new.webp" alt="Pipeline workflow" width="6766" height="3174" decoding="async" loading="eager">
+        <p>Set up your environment and software following instructions in <a href="https://github.com/le-liang/Multimodal-Wireless/" target="_blank">https://github.com/le-liang/Multimodal-Wireless/</a>, you can begin the extension or replay process by following the detailed steps in our tutorial video.</p>
+        
+        <section id="accelerated-pipeline" aria-labelledby="accelerated-pipeline-title" style="margin:2rem 0; padding:1.25rem; background:#f6faff; border-left:4px solid #297bfa; border-radius:8px; scroll-margin-top:6rem;">
+            <h2 id="accelerated-pipeline-title" style="margin-top:0; color:#315782; font-size:1.4rem;">🚀 v1.1.0: Accelerated Generation Pipeline</h2>
+            <p><strong>The pipeline changes only in stages 2 and 3.</strong> Stage 1 (CARLA sensor capture and per-frame pose recording) remains unchanged.</p>
+            <div style="overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; color:#54647a; line-height:1.6; text-align:left;">
+                    <caption style="text-align:left; font-weight:600; color:#315782; padding-bottom:0.75rem;">🚀 Original pipeline vs. v1.1.0</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" style="padding:0.75rem; border-bottom:2px solid #d8e4f0;">Stage</th>
+                            <th scope="col" style="padding:0.75rem; border-bottom:2px solid #d8e4f0;">Original workflow</th>
+                            <th scope="col" style="padding:0.75rem; border-bottom:2px solid #d8e4f0;">v1.1.0 workflow</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" style="padding:0.75rem; border-bottom:1px solid #d8e4f0; vertical-align:top;">CARLA</th>
+                            <td style="padding:0.75rem; border-bottom:1px solid #d8e4f0; vertical-align:top;">Capture sensor data and record vehicle poses for every frame.</td>
+                            <td style="padding:0.75rem; border-bottom:1px solid #d8e4f0; vertical-align:top;"><strong>Unchanged.</strong> Capture the same sensor data and per-frame poses.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="padding:0.75rem; border-bottom:1px solid #d8e4f0; vertical-align:top;">Blender</th>
+                            <td style="padding:0.75rem; border-bottom:1px solid #d8e4f0; vertical-align:top;">Reconstruct and export a complete scene for every frame, storing a sequence of full scenes.</td>
+                            <td style="padding:0.75rem; border-bottom:1px solid #d8e4f0; vertical-align:top;">Generate and export <strong>only the initial scene</strong>. No separate full scenes are generated for subsequent frames, eliminating their intermediate storage requirement.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="padding:0.75rem; vertical-align:top;">Sionna</th>
+                            <td style="padding:0.75rem; vertical-align:top;">Load a complete scene for each frame, then compute its propagation paths and channel data.</td>
+                            <td style="padding:0.75rem; vertical-align:top;"><strong>Load the initial scene once for the first frame.</strong> For each subsequent frame, move and orient the vehicles within the existing scene using the recorded poses, then compute that frame's paths and channel data. This removes repeated scene-loading time.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><strong>Together with code-level optimizations, these changes deliver 20&times; faster total generation (approximately 95% less time for the same workload) while preserving the generated results.</strong> Generating only the initial scene also removes the large storage overhead of keeping full scenes for every frame.</p>
+        </section>
+
+        <p>➡️ <strong>Watch the v1.1.0 Workflow Tutorial:</strong></p>
+        
+        <div class="video-container">
+            <div class="video-label">YouTube</div>
+            <div class="video-wrapper">
+                    <iframe loading="lazy"
+                        src="https://www.youtube.com/embed/uqUeBgW2ls8?start=8"
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen>
+                    </iframe>
+            </div>
+        </div>
+        
+        <div class="video-container">
+            <div class="video-label">Bilibili</div>
+            <div class="video-wrapper">
+                <iframe loading="lazy" src="https://player.bilibili.com/player.html?bvid=BV1r11nBGEaV&page=1&high_quality=1&autoplay=0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+

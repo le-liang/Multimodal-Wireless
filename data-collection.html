@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collection - Multimodal-Wireless</title>
+    <style>
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background:#f8f9fa; }
+        .topbar { position: sticky; top: 0; z-index: 999; background: #ffffffea; backdrop-filter: saturate(150%) blur(6px); border-bottom: 1px solid #e8eef6; }
+        .topbar-inner { max-width: 1200px; margin: 0 auto; padding: 0.6rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+        .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: 0.02em; color: #254f86; text-decoration: none; white-space: nowrap; }
+        .nav-links { display: flex; align-items: center; gap: 16px; }
+        .nav-links a { color: #365676; text-decoration: none; font-weight: 600; padding: 8px 10px; border-radius: 8px; transition: background-color 0.2s ease, color 0.2s ease; white-space: nowrap; }
+        .nav-links a:hover, .nav-links a:focus { background-color: #edf3fa; color: #254f86; }
+        .nav-links a.active { background-color: #e6f0ff; color: #1b4fb8; }
+        .container { max-width: 1100px; margin: 2rem auto; padding: 1.5rem; background:#fff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); }
+        h1 { margin: 0 0 0.5rem 0; font-size: 1.6rem; color:#2c3e50; border-bottom: 2px solid #eee; padding-bottom: 0.75rem;}
+        h2 { font-size: 1.4rem; color:#2c3e50; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-top: 1.5rem; }
+        h3 { font-size: 1.1rem; color:#34495e; margin-top: 1.5rem; }
+        p { color:#54647a; line-height: 1.7; }
+        
+        /* New Styles for the grid layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+        .directory-tree pre {
+            background-color: #f6f8fa;
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #dfe4ea;
+            white-space: pre;
+            overflow-x: auto;
+            font-size: 1em;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .description ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .description li {
+            margin-bottom: 0.75rem;
+        }
+        .description code {
+            background-color: #eef2f7;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.9em;
+        }
+
+        /* Responsive layout for smaller screens */
+        @media (max-width: 900px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Simple hiding for demo, can be replaced with a hamburger menu */
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html">Multimodal-Wireless</a>
+            <nav class="nav-links" aria-label="Primary">
+                <a href="index.html">Overview</a>
+                <a href="scenarios.html">Scenarios</a>
+                <a href="paper.html">Paper</a>
+                <a href="https://github.com/le-liang/Multimodal-Wireless" target="_blank">Code</a>
+                <a href="data-collection.html" class="active" aria-current="page">Data Collection</a>
+                <a href="tutorials.html">Tutorials</a>
+                <a href="download.html">Download Dataset</a>
+                <a href="https://www.liang-seu.net/" target="_blank" rel="noopener">Research Team</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Data Collection</h1>
+        <p>This section details the data collection parameters. Our dataset comprises <b>7</b> modalities captured within the CARLA simulator. 
+            The primary sensor suite includes <b>LiDAR, RGB cameras, depth cameras, radar,</b> and <b>IMU</b>. 
+            Additionally, we provide <b>GPS</b> and ground-truth <b>bounding box</b> data for advanced tasks. 
+            The <b>wireless channel</b> modality is characterized by multi-path properties, including complex channel gains, path delays, Angles of Departure (AoD), and Angles of Arrival (AoA).</p>
+            
+        <div class="grid-container">
+            <div class="directory-tree">
+                <h2>File Hierarchy (V2I)</h2>
+                <pre><code>Multimodal-Wireless
+|
+|-- Town03
+|   |
+|   `-- Town03_CBDcrossroad_seed42
+|       |
+|       |-- cav_1
+|       |   |-- 000001.yaml
+|       |   |-- 000001.pcd
+|       |   |-- 000001_paths.npy
+|       |   |-- 000001_camera0.png
+|       |   |-- 000001_camera1.png
+|       |   |-- 000001_camera2.png
+|       |   `-- 000001_camera3.png
+|       |
+|       |-- cav_2
+|       |   `-- ...
+|       |
+|       `-- rsu_1
+|           |-- 000001.yaml
+|           |-- 000001.pcd
+|           `-- ...
+|
+|-- Town05
+|   `-- Town05_... (Same structure)
+|
+`-- Town10
+    `-- Town10_... (Same structure)
+</code></pre>
+            </div>
+            <div class="description">
+                <h2>Description of Modalities</h2>
+                <p>The dataset is organized by simulation towns, scenarios, and participating agents (CAVs and RSUs). All collected modalities are synchronized and aligned by a six-digit frame number.</p>
+                
+                <h3>Connected and Automated Vehicle (CAV)</h3>
+                <ul>
+                    <li><strong>LiDAR:</strong> 3D point cloud data stored in <code>.pcd</code> files.</li>
+                    <li><strong>RGB Cameras:</strong> Four forward, backward, left, and right-facing camera images stored in <code>.png</code> files.</li>
+                    <li><strong>Metadata (in <code>.yaml</code>):</strong>
+                        <ul>
+                            <li>GPS location estimates and IMU information.</li>
+                            <li>Ground-truth bounding box info for other vehicles/RSUs detected by the LiDAR. The RSU is identified with an ID of 0.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Channel Information:</strong> Files ending with <code>_paths.npy</code> contain V2I channel data, representing the downlink from the RSU (transmitter) to the CAV (receiver).</li>
+                </ul>
+
+                <h3>Roadside Unit (RSU)</h3>
+                <ul>
+                    <li><strong>LiDAR:</strong> 3D point cloud data in <code>.pcd</code> files.</li>
+                    <li><strong>Cameras:</strong> Forward-facing RGB and depth camera images as <code>.png</code> files.</li>
+                    <li><strong>Metadata (in <code>.yaml</code>):</strong>
+                        <ul>
+                            <li>Ground-truth bounding box info for other vehicles/RSUs detected by the LiDAR.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Radar:</strong> Radar point cloud data stored in <code>.json</code> files.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+<!-- Independent Modality Parameter Section (based on config.yaml) -->
+<div class="modality-config" style="max-width:1100px; margin:2rem auto 2.5rem auto; padding:1.5rem; background:#fafdff; border-radius:8px; border:1px solid #ebf1f8; box-shadow:0 2px 8px rgba(80,120,160,0.04);">
+    <h2 style="font-size:1.35rem; color:#23426d; margin-bottom:1.1rem;">Modality Configuration Details</h2>
+    <h3 style="margin-top:1.8rem; color:#375d90;">CAV</h3>
+    <ul>
+      <li><b>Camera:</b>
+        <ul>
+          <li>category: <code>RGB camera</code></li>
+          <li>resolution: <code>640×480</code></li>
+          <li>fov: <code>110</code></li>
+          <li>transforms in CARLA world:
+            <ul>
+              <li>camera0: {x: 1.5 m, z: 2.4 m, yaw: 0°} (front)</li>
+              <li>camera1: {x: -1.5 m, z: 2.4 m, yaw: 180°} (rear)</li>
+              <li>camera2: {x: 0, y: -0.7 m, z: 2.4 m, yaw: -90°} (left)</li>
+              <li>camera3: {x: 0, y: 0.7 m, z: 2.4 m, yaw: 90°} (right)</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><b>LiDAR:</b>
+        <ul>
+          <li>sensing range: <code>120 m</code></li>
+          <li>channels: <code>64</code></li>
+          <li>upper_fov: <code>2</code></li>
+          <li>lower_fov: <code>-25</code></li>
+          <li>transform: {x: 0, z: 2.5 m}</li>
+        </ul>
+      </li>
+      <li><b>IMU:</b>
+        <ul>
+          <li>noise model
+            <ul>
+                <li>acceleration: standard deviation of 0.1 m/s^2 for X,Y and Z axes</li>
+                <li>gyroscope: standard deviation of 0.002 rad/s for X,Y and Z axes</li>
+            </ul>
+          </li>
+        </ul>
+    <li><b>GNSS:</b>
+        <ul>
+            <li>noise model
+            <ul>
+                <li>altitude: standard deviation of 0.005 m</li>
+                <li>latitude and longitude: standard deviation of 1e-5°, leading to a 2-5 m localization bias</li> 
+                <li>heading direction: standard deviation of 0.1°</li>
+                <li>speed: standard deviation of 0.2 m/s</li>
+            </ul>
+            </li>
+        </ul>
+        
+      </li>
+    </ul>
+    <h3 style="margin-top:2rem; color:#375d90;">RSU</h3>
+    <ul>
+      <li><b>Camera:</b>
+        <ul>
+          <li>category: <code>RGB camera</code></li>
+          <li>resolution: <code>640×480</code></li>
+          <li>fov: <code>110</code></li>
+          <li>transform: {x: 0, y: 0, z: 3.9 m} </li>
+        </ul>
+      </li>
+      <li><b>Depth Camera:</b>
+        <ul>
+          <li>category: <code>Depth camera</code></li>
+          <li>image_size_x: <code>640</code></li>
+          <li>image_size_y: <code>480</code></li>
+          <li>fov: <code>110</code></li>
+          <li>transform: {x: 0, y: 0, z: 3.9 m}</li>
+        </ul>
+      </li>
+      <li><b>LiDAR:</b>
+        <ul>
+          <li>sensing range: <code>120 m</code></li>
+          <li>channels: <code>64</code></li>
+          <li>upper_fov: <code>2</code></li>
+          <li>lower_fov: <code>-25</code></li>
+          <li>transform: {x: 0, z: 4 m}</li>
+        </ul>
+      </li>
+      <li><b>Radar:</b>
+        <ul>
+          <li>horizontal_fov: <code>110</code></li>
+          <li>vertical_fov: <code>30</code></li>
+          <li>range: <code>100</code></li>
+          <li>transform: {x: 0, z: 4.1 m}</li>
+        </ul>
+      </li>
+    </ul>
+    <h3 style="margin-top:2rem; color:#375d90;">Channel</h3>
+    <ul>
+      <li><b>Multipath complex gain \(a\)</b></li>
+      <p>
+        The baseband complex gain \(a\) is of dimension [batch_size, num_rx, num_rx_ant, num_tx, num_tx_ant, num_paths, num_time_steps]. In our case we have no batch and 1 tx to 1 rx, which produces [1, 1, \(N_{\mathrm{r}}\), 1, \(N_{\mathrm{r}}\), \(M\), 1]
+      </p>
+      <li><b>Multipath delay \(\tau\)</b></li>
+      <p>
+        The multipath delay \(\tau\) is of dimension [batch_size, num_rx, num_tx, num_paths]. In our case we have the dimension to be [1, 1, 1, \(M\)]
+      </p>
+      <li><b>Multipath azimuth and elevation AoA and AoD \(\{\theta,\phi\}_{\mathrm{t},\mathrm{r}}\)</b> from the <b>local perspective</b> of the transceiver.</li>
+      <p>
+        The four angles have the dimension of [1, 1, 1, \(M\)] as well. From the communication perspective, the angles are computed within a local coordinate system of the planar arrays, which is defined as the figure:
+        <br>
+        <img src="./html_assets/coordinate.webp" alt="Coordinate System" style="margin-top:10px;max-width:350px;height:auto;" width="657" height="510" decoding="async" loading="lazy">
+      </p>
+      <p>
+        Notably, in Sionna, the planar arrays are defined in <b>y-z</b> plane.
+      </p>
+      <li><b>Global multipath azimuth and elevation AoA and AoD \(\{\theta,\phi\}_{\mathrm{t},\mathrm{r}}\)</b> from the <b>global coordinate system (GCS)</b>.</li>
+      <p>The orignal angle data generated by Sionna when computing the paths. The data of dimension [1, 1, 1, \(M\)] is defined the same way as the figure, but in the GCS.</p>
+    </ul>
+    
+</div>
+<!-- End independent modality section -->
+</body>
+</html>

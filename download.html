@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Dataset - Multimodal-Wireless</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+        }
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffffea;
+            backdrop-filter: saturate(150%) blur(6px);
+            border-bottom: 1px solid #e8eef6;
+        }
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.6rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+        .brand {
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: 0.02em;
+            color: #254f86;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .nav-links a {
+            color: #365676;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            white-space: nowrap;
+        }
+        .nav-links a:hover, .nav-links a:focus {
+            background-color: #edf3fa;
+            color: #254f86;
+        }
+        .nav-links a.active {
+            background-color: #e6f0ff;
+            color: #1b4fb8;
+        }
+        .container {
+            max-width: 700px;
+            margin: 2.5rem auto 2.5rem auto;
+            padding: 2rem 2.2rem 2.5rem 2.2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+        }
+        h1 { color: #2c3e50; text-align: center; font-size: 1.6rem; margin-bottom: 1.3rem; }
+        p, ul, li { font-size: 1.08rem; color: #54647a; }
+        ul { padding-left: 1.2em; }
+        li {margin-bottom: 0.7em;}
+        .note {
+            font-size: 1.01rem;
+            color: #416088;
+            background: #f4f7fc;
+            border-radius: 7px;
+            padding: 0.8em 1.1em;
+            margin-top: 1.3rem;
+        }
+        /* 新增小按钮样式 */
+        .btn-link {
+            display: inline-block;
+            font-size: 1rem;
+            color: #318bfa !important;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-right: 20px;
+            margin-bottom: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.18s;
+        }
+        .btn-link:hover, .btn-link:focus {
+            color: #1764ae !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html">Multimodal-Wireless</a>
+            <nav class="nav-links" aria-label="Primary">
+                <a href="index.html">Overview</a>
+                <a href="scenarios.html">Scenarios</a>
+                <a href="paper.html">Paper</a>
+                <a href="https://github.com/le-liang/Multimodal-Wireless" target="_blank">Code</a>
+                <a href="data-collection.html">Data Collection</a>
+                <a href="tutorials.html">Tutorials</a>
+                <a href="download.html" class="active" aria-current="page">Download Dataset</a>
+                <a href="https://www.liang-seu.net/" target="_blank" rel="noopener">Research Team</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Download the Multimodal-Wireless Dataset</h1>
+        <p>
+            The Multimodal-Wireless dataset is available for download. Please choose the source that best suits you:
+        </p>
+        <ul style="margin-bottom:1.6rem;">
+            <li>
+                <strong>Global (OneDrive):</strong>
+                <a class="btn-link" href="https://1drv.ms/f/c/e891739d21c98746/EpnYIxEFXAdAmoj7GePie8QB5be53v1TTER4OmjjQbNYNQ?e=ykbmZh" target="_blank">Download from OneDrive</a>
+            </li>
+            <li>
+                <strong>China mainland mirror:</strong>
+                <a class="btn-link" href="https://pan.quark.cn/s/de33117418c4" target="_blank">Download from Quark</a>
+            </li>
+        </ul>
+        <div class="note">
+            <b>Tips:</b> <br>
+            <ul>
+                <li>The dataset has been  <b>updated</b> in Nov. 17, 2025. Please download the latest version.</li>
+                <li>The channel data has been augmented with additional AoD and AoA values based on the local coordinate system of planar arrays in Nov. 23, 2025. Detailed specifications of the channel data can be found at <a href="data-collection.html">Data Collection</a>.</li>
+                <li>The <b>sunny</b> folder contains the dataset collected under clear weather (sunny) conditions, in which the <b>channel data</b> folder contains channel data under various settings and the <b>sensor data</b> folder contains sensor data of the scenario. Users are free to combine the suitable channel data with the sensor data for their own research.</li>
+                <li>The <b>Blender_Towns</b> folder provides Blender-format mirrors of all CARLA towns for advanced scenario replay and visualization.</li>
+                <li>The <b>rainy</b> and <b>foggy</b> folders contain the dataset collected under rainy and foggy weather conditions, respectively. We note here that the LiDAR data under adverse weather conditions are acquired based on specific post-processing, please refer to the <a href="http://arxiv.org/abs/2603.15093">arXiv Paper</a> page.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

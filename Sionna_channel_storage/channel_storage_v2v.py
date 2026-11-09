@@ -184,6 +184,32 @@ for scenario_folder in scenario_folders:
                     glob_theta_r = tf.gather(glob_theta_r, valid_indices, axis=-1)
                     glob_phi_r = paths.phi_r[:, rx_index:rx_index + 1, tx_index:tx_index + 1]
                     glob_phi_r = tf.gather(glob_phi_r, valid_indices, axis=-1)
+
+                    if tf.size(valid_indices) == 0:
+                        # Retry only this directed link with the original scattering fallback.
+                        saved_transmitters = list(scene.transmitters.values())
+                        saved_receivers = list(scene.receivers.values())
+                        try:
+                            for device in saved_transmitters + saved_receivers:
+                                if device.name not in (transmitter["tx_name"], receiver["rx_name"]):
+                                    scene.remove(device.name)
+                            fallback_paths = scene.compute_paths(max_depth=1, num_samples=300_000, scattering=True)
+                            fallback_coefficients, _ = fallback_paths.cir()
+                        finally:
+                            # Restore insertion order: batched tensor indices depend on it.
+                            for device in list(scene.transmitters.values()) + list(scene.receivers.values()):
+                                scene.remove(device.name)
+                            for device in saved_transmitters + saved_receivers:
+                                scene.add(device)
+
+                        fallback_indices = tf.where(fallback_paths.mask[0, 0, 0])[:, 0]
+                        link_coefficients = tf.gather(fallback_coefficients, fallback_indices, axis=-2)
+                        tau = tf.gather(fallback_paths.tau, fallback_indices, axis=-1)
+                        glob_theta_t = tf.gather(fallback_paths.theta_t, fallback_indices, axis=-1)
+                        glob_phi_t = tf.gather(fallback_paths.phi_t, fallback_indices, axis=-1)
+                        glob_theta_r = tf.gather(fallback_paths.theta_r, fallback_indices, axis=-1)
+                        glob_phi_r = tf.gather(fallback_paths.phi_r, fallback_indices, axis=-1)
+
                     theta_t, phi_t = aod_transform(glob_theta_t, glob_phi_t, transmitter["rotation"])
                     theta_r, phi_r = aod_transform(glob_theta_r, glob_phi_r, receiver["rotation"])
 
